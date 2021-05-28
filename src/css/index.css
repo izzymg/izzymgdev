@@ -7,8 +7,7 @@
 
 h1, h2 {
     font-weight: normal;
-    color: hsl(0, 0%, 10%);
-    text-align: center;
+    color: hsl(0, 0%, 14%);
 }
 
 .layout {
@@ -82,7 +81,27 @@ h1, h2 {
 }
 
 .page-title {
+    font-family: monospace;
     font-size: 5em;
+    margin: 0;
+}
+
+.page-subtitle {
+    padding: 0 0 0 3rem;
+    color: hsl(0, 0%, 38%);
+}
+
+.bio {
+    font-size: 1.1em;
+}
+
+.bio > .hi {
+    font-size: 2em;
+}
+
+hr {
+    margin: 3rem 0 1rem 0;
+    border: 2px solid hsl(0, 0%, 95%);
 }
 
 .contact, .tech {
@@ -90,7 +109,7 @@ h1, h2 {
 }
 
 .contact-info {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: monospace;
 }
 
 .tech ul {
