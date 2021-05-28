@@ -12,7 +12,7 @@ const readCss = async() => {
 
 const process = buffer => {
   return new Promise((resolve) => {
-    postcss([autoprefixer]).process(buffer).then(v => {
+    postcss([autoprefixer]).process(buffer, { from: inputPath, to: outputPath }).then(v => {
       resolve(v.css);
     });
   });
