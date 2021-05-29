@@ -142,6 +142,32 @@ hr {
     font-family: var(--monospace-font);
 }
 
+.contact-info > a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contact-info > a {
+    color: hsl(216, 45%, 50%);
+    text-decoration: none;
+
+    transition: color ease-in 150ms;
+}
+
+.contact-info > a:visited {
+    color: hsl(216, 40%, 40%);
+}
+
+.contact-info > a:hover, .contact-info > a:focus {
+    color: hsl(216, 40%, 20%);
+}
+
+.contact-info > a:active {
+    color: hsl(161, 28%, 46%);
+}
+
 .tech ul {
     list-style: none;
     padding: 0;
@@ -157,10 +183,6 @@ hr {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.tech .icon * {
-    fill: rgb(131, 131, 131);
 }
 
 .dog {
