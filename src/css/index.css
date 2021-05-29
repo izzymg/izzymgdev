@@ -117,6 +117,22 @@ hr {
     padding: 0;
 }
 
+.tech ul li {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 10px;
+    border: 1px solid rgb(243, 243, 243);
+    box-shadow: 0 5px 7px -1px hsla(0, 0%, 20%, 0.23);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tech .icon * {
+    fill: rgb(131, 131, 131);
+}
+
 .dog {
     text-align: center;
     background: none;
