@@ -156,6 +156,7 @@ hr {
 }
 
 .contact-info > a {
+    height: 52px;
     color: hsl(216, 45%, 50%);
     text-decoration: none;
 
