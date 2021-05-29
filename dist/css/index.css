@@ -1,6 +1,36 @@
+/* cambay-regular - latin */
+@font-face {
+    font-family: 'Cambay';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/cambay/cambay-v7-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+        url('../fonts/cambay/cambay-v7-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../fonts/cambay/cambay-v7-latin-regular.woff2') format('woff2'),
+        url('../fonts/cambay/cambay-v7-latin-regular.woff') format('woff'),
+        url('../fonts/cambay/cambay-v7-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../fonts/cambay/cambay-v7-latin-regular.svg#Cambay') format('svg'); /* Legacy iOS */
+}
+
+/* pt-mono-regular - latin */
+@font-face {
+    font-family: 'PT Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/pt-mono/pt-mono-v8-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+        url('../fonts/pt-mono/pt-mono-v8-latin-regular.woff2') format('woff2'),
+        url('../fonts/pt-mono/pt-mono-v8-latin-regular.woff') format('woff'),
+        url('../fonts/pt-mono/pt-mono-v8-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../fonts/pt-mono/pt-mono-v8-latin-regular.svg#PTMono') format('svg'); /* Legacy iOS */
+  }
+  
+
 :root {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Cambay", Helvetica, sans-serif;
     color: hsl(0, 0%, 18%);
+
+    --monospace-font: "PT Mono";
 
     --card-top-height: 4rem;
 }
@@ -87,7 +117,7 @@ h1, h2 {
 }
 
 .page-title {
-    font-family: monospace;
+    font-family: var(--monospace-font);
     font-size: 5em;
     margin: 0;
 }
@@ -115,7 +145,7 @@ hr {
 }
 
 .contact-info {
-    font-family: monospace;
+    font-family: var(--monospace-font);
 }
 
 .tech ul {
