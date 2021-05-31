@@ -14,92 +14,138 @@
 }
 
 /* pt-mono-regular - latin */
+/*
 @font-face {
     font-display: swap;
     font-family: "PT Mono";
     font-style: normal;
     font-weight: 400;
-    src: url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.eot"); /* IE9 Compat Modes */
+    src: url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.eot");
     src: local(""),
         url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.woff2") format("woff2"),
         url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.woff") format("woff"),
-        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.ttf") format("truetype"), /* Safari, Android, iOS */
-        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.svg#PTMono") format("svg"); /* Legacy iOS */
-  }
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.ttf") format("truetype"), 
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.svg#PTMono") format("svg"),
+}
+*/
   
 
 :root {
     font-family: "Cambay", Helvetica, sans-serif;
     color: hsl(0, 0%, 18%);
 
-    --monospace-font: "PT Mono";
-
     --card-top-height: 4rem;
+
+    --bg-one: linear-gradient(135deg, #ff9c6b 10%, #BB4E75 100%);
+    --bg-two: hsl(240, 2%, 17%);
+    --bg-three: hsl(20, 100%, 71%);
+    --bg-four: hsl(339, 40%, 60%);
+
+    --card-bg: hsl(260, 9%, 26%);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-two);
 }
 
 h1, h2 {
     font-weight: normal;
-    color: hsl(0, 0%, 14%);
 }
 
-.layout {
-    display: grid;
-    place-items: center;
+/* Intro */
+.intro {
+    background: var(--bg-one);
+    text-align: center;
+
+    color: hsl(0, 0%, 94%);
+
+    padding: 2rem 0;
 }
 
-.soft-shadow {
-    box-shadow: hsl(0, 0%, 80%) 2px 2px 6px -1px;
+.intro .page-title {
+    font-size: 5em;
+    padding: 0;
+    margin: 0;
 }
 
-.bg-one {
-    border-radius: 20px 20px 0 0;
-    --top-color: #fec5bb;
-    --rest-color: #fff;
+.intro .page-subtitle {
+    font-size: 2.2em;
+    margin: 0.2rem 0 4rem 0;
+    padding: 0;
 
-    background: linear-gradient(
-        to bottom,
-        var(--top-color) 0%,
-        var(--top-color) var(--card-top-height),
-        var(--rest-color) var(--card-top-height),
-        var(--rest-color) 100%
-    );
+    color: hsl(0, 0%, 85%);
 }
 
-.bg-two {
-    border-radius: 20px 20px 0 0;
-
-    --top-color: #d8e2dc;
-    --rest-color: #fff;
-
-    background: linear-gradient(
-        to bottom,
-        var(--top-color) 0%,
-        var(--top-color) var(--card-top-height),
-        var(--rest-color) var(--card-top-height),
-        var(--rest-color) 100%
-    );
+.bio-wrap {
+    display: flex;
+    justify-content: center;
 }
 
-@media screen and (min-width: 1921px) {
-    .cards {
-        width: 60%;
+.bio {
+    font-size: 1.2em;
+    margin: 0 1rem;
+}
+
+.bio .hi {
+    display: inline-block;
+    line-height: 2px;
+    font-size: 2em;
+}
+
+@media only screen and (min-width: 950px) {
+    .intro {
+        clip-path: polygon(0 0%, 100% 0, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        padding: 4rem 0 3rem 0;
+    }
+
+    .bio {
+        width: 40%;
     }
 }
 
-@media screen and (min-width:1280px) {
+/* Card layout */
+
+.cards {
+    margin: 0 1rem;
+}
+
+.card {
+    width: 100%;
+    padding: 3rem;
+    box-sizing: border-box;
+
+    margin: 2rem 0;
+
+    color: hsl(0, 0%, 85%);
+
+    opacity: 0.9;
+
+    transition: opacity 100ms ease-in;
+}
+
+.card:hover {
+    opacity: 1;
+}
+
+/* Large device layout */
+@media screen and (min-width: 950px) {
     .cards {
+        margin: 3rem 3rem 0 3rem;
         display: grid;
-        grid-template-rows: repeat(auto-fit, minmax(10px, 1fr));
         gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+        place-items: start center;
     }
 
-    .tall-card {
-        grid-row: span 2 / auto;
+    .card {
+        box-shadow: 5px 5px 0px hsla(12, 10%, 36%, 0.562);
     }
+}
 
-    .wide-card {
-        grid-column: span 2 / auto;
-    }
+.card > div {
+    margin-top: var(--card-top-height);
 }
 
 .fade {
@@ -108,44 +154,32 @@ h1, h2 {
 
 @keyframes fade {
     from { opacity: 0; }
-    to { opacity: 1; }
+    to { opacity: 0.9; }
 }
 
-.card {
-    padding: 2rem;
+.titled-one {
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(
+        to bottom,
+        var(--bg-three) 0%,
+        var(--bg-three) var(--card-top-height),
+        var(--card-bg) var(--card-top-height),
+        var(--card-bg) 100%
+    );
 }
 
-.page-title {
-    font-family: var(--monospace-font);
-    font-size: 5em;
-    margin: 0;
+.titled-two {
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(
+        to bottom,
+        var(--bg-four) 0%,
+        var(--bg-four) var(--card-top-height),
+        var(--card-bg) var(--card-top-height),
+        var(--card-bg) 100%
+    );
 }
 
-.page-subtitle {
-    padding: 0 0 0 3rem;
-    color: hsl(0, 0%, 38%);
-}
-
-.bio {
-    font-size: 1.1em;
-}
-
-.bio > .hi {
-    font-size: 2em;
-}
-
-hr {
-    margin: 3rem 0 1rem 0;
-    border: 2px solid hsl(0, 0%, 95%);
-}
-
-.contact, .tech {
-    margin-top: 4rem;
-}
-
-.contact-info {
-    font-family: var(--monospace-font);
-}
+/* Card content */
 
 .contact-info > a {
     display: flex;
@@ -156,22 +190,18 @@ hr {
 
 .contact-info > a {
     height: 52px;
-    color: hsl(216, 45%, 50%);
+    color: hsl(241, 40%, 60%);
     text-decoration: none;
 
     transition: color ease-in 150ms;
 }
 
-.contact-info > a:visited {
-    color: hsl(216, 40%, 40%);
-}
-
 .contact-info > a:hover, .contact-info > a:focus {
-    color: hsl(216, 40%, 20%);
+    color: hsl(241, 40%, 50%);
 }
 
 .contact-info > a:active {
-    color: hsl(161, 28%, 46%);
+    color: hsl(357, 28%, 46%);
 }
 
 .tech ul {
@@ -180,26 +210,35 @@ hr {
 }
 
 .tech ul li {
-    padding: 1rem;
-    margin: 1rem 0;
     border-radius: 10px;
-    border: 1px solid rgb(243, 243, 243);
-    box-shadow: 0 5px 7px -1px hsla(0, 0%, 20%, 0.23);
+    border: 1px solid hsl(0, 0%, 23%);
+    box-shadow: 1px 5px 7px 2px hsla(324, 14%, 36%, 0.356);
+
+    padding: 1rem 1rem;
+    margin: 0 0 1rem 0;
+
+    font-size: 1.2em;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.dog {
-    text-align: center;
-    background: none;
-}
-
 .dog-img {
-    object-fit: cover;
     max-width: 100%;
     max-height: 100%;
 
     border: 10px solid #ffe5d9;
+}
+
+.gear {
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    z-index: -5;
+}
+
+.gear {
+    width: 240px;
+    fill: hsl(0, 0%, 59%);
 }
