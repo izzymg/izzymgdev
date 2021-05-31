@@ -20,7 +20,7 @@ const clearDist = async() => {
 const makeDist = () => fs.mkdir("./dist/css", { recursive: true });
 
 const readCss = () => fs.readFile(cssInputPath, "utf8");
-const writeCss = () => fs.writeFile(cssOutputPath, "utf8");
+const writeCss = buffer => fs.writeFile(cssOutputPath, buffer);
 const copyHtml = () => fs.copyFile("./src/index.html", "./dist/index.html");
 const copyAssets = () => copyDir("./src/assets", "./dist", {  });
 
