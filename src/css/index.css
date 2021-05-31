@@ -78,14 +78,9 @@ h1, h2 {
     color: hsl(0, 0%, 85%);
 }
 
-.bio-wrap {
-    display: flex;
-    justify-content: center;
-}
-
 .bio {
     font-size: 1.2em;
-    margin: 0 1rem;
+    margin: 0 5%;
 }
 
 .bio .hi {
@@ -101,7 +96,7 @@ h1, h2 {
     }
 
     .bio {
-        width: 40%;
+        margin: 0 30%;
     }
 }
 
