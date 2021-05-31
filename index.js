@@ -61,6 +61,7 @@ const main = async() => {
     await makeDist();
   } catch(e) {
     console.error("failed to regenerate ./dist", e);
+    process.exit(1);
   } finally {
     console.log("./dist generated");
   }
@@ -70,6 +71,7 @@ const main = async() => {
     console.log(`build done in ${Date.now() - start}ms`);
   } catch(e) {
     console.error("build errored: ", e);
+    process.exit(1);
   }
 };
 

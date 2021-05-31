@@ -1,0 +1,27 @@
+{
+  "name": "grid",
+  "version": "1.0.0",
+  "description": "My portfolio & landing page.",
+  "main": "index.js",
+  "dependencies": {
+    "autoprefixer": "^10.2.6",
+    "htmlparser": "^1.7.7",
+    "jsdom": "^16.6.0",
+    "postcss": "^8.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izzymg/izzymgdev.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/izzymg/izzymgdev/issues"
+  },
+  "homepage": "https://github.com/izzymg/izzymgdev#readme"
+}
