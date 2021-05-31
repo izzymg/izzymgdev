@@ -4,13 +4,13 @@
     font-family: "Cambay";
     font-style: normal;
     font-weight: 400;
-    src: url("../fonts/cambay/cambay-v7-latin-regular.eot"); /* IE9 Compat Modes */
+    src: url("../assets/fonts/cambay/cambay-v7-latin-regular.eot"); /* IE9 Compat Modes */
     src: local(""),
-        url("../fonts/cambay/cambay-v7-latin-regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-        url("../fonts/cambay/cambay-v7-latin-regular.woff2") format("woff2"),
-        url("../fonts/cambay/cambay-v7-latin-regular.woff") format("woff"),
-        url("../fonts/cambay/cambay-v7-latin-regular.ttf") format("truetype"), /* Safari, Android, iOS */
-        url("../fonts/cambay/cambay-v7-latin-regular.svg#Cambay") format("svg"); /* Legacy iOS */
+        url("../assets/fonts/cambay/cambay-v7-latin-regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+        url("../assets/fonts/cambay/cambay-v7-latin-regular.woff2") format("woff2"),
+        url("../assets/fonts/cambay/cambay-v7-latin-regular.woff") format("woff"),
+        url("../assets/fonts/cambay/cambay-v7-latin-regular.ttf") format("truetype"), /* Safari, Android, iOS */
+        url("../assets/fonts/cambay/cambay-v7-latin-regular.svg#Cambay") format("svg"); /* Legacy iOS */
 }
 
 /* pt-mono-regular - latin */
@@ -19,12 +19,12 @@
     font-family: "PT Mono";
     font-style: normal;
     font-weight: 400;
-    src: url("../fonts/pt-mono/pt-mono-v8-latin-regular.eot"); /* IE9 Compat Modes */
+    src: url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.eot"); /* IE9 Compat Modes */
     src: local(""),
-        url("../fonts/pt-mono/pt-mono-v8-latin-regular.woff2") format("woff2"),
-        url("../fonts/pt-mono/pt-mono-v8-latin-regular.woff") format("woff"),
-        url("../fonts/pt-mono/pt-mono-v8-latin-regular.ttf") format("truetype"), /* Safari, Android, iOS */
-        url("../fonts/pt-mono/pt-mono-v8-latin-regular.svg#PTMono") format("svg"); /* Legacy iOS */
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.woff2") format("woff2"),
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.woff") format("woff"),
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.ttf") format("truetype"), /* Safari, Android, iOS */
+        url("../assets/fonts/pt-mono/pt-mono-v8-latin-regular.svg#PTMono") format("svg"); /* Legacy iOS */
   }
   
 
