@@ -59,6 +59,9 @@ h1, h2 {
     background: var(--bg-one);
     text-align: center;
 
+    clip-path: polygon(0 0%, 100% 0, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    padding: 4rem 0 3rem 0;
+
     color: hsl(0, 0%, 94%);
 
     padding: 2rem 0;
@@ -80,7 +83,7 @@ h1, h2 {
 
 .bio {
     font-size: 1.2em;
-    margin: 0 5%;
+    margin: 0 30%;
 }
 
 .bio .hi {
@@ -89,14 +92,14 @@ h1, h2 {
     font-size: 2em;
 }
 
-@media only screen and (min-width: 950px) {
+@media screen and (max-width: 950px) {
     .intro {
-        clip-path: polygon(0 0%, 100% 0, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-        padding: 4rem 0 3rem 0;
+        clip-path: none;
+        padding: 3rem 0;
     }
 
     .bio {
-        margin: 0 30%;
+        margin: 0 1em;
     }
 }
 
