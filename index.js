@@ -17,12 +17,15 @@ const clearDist = async() => {
   }
 };
 
-const makeDist = () => fs.mkdir("./dist/css", { recursive: true });
+const makeDist = async() => {
+  await fs.mkdir("./dist/css", { recursive: true })
+  await fs.mkdir("./dist/assets", { recursive: true })
+};
 
 const readCss = () => fs.readFile(cssInputPath, "utf8");
 const writeCss = buffer => fs.writeFile(cssOutputPath, buffer);
 const copyHtml = () => fs.copyFile("./src/index.html", "./dist/index.html");
-const copyAssets = () => copyDir("./src/assets", "./dist", {  });
+const copyAssets = () => copyDir("./src/assets", "./dist/assets", {  });
 
 const processCss = buffer => {
   return new Promise((resolve) => {
