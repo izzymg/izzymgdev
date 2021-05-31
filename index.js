@@ -33,29 +33,31 @@ const processCss = buffer => {
 };
 
 const buildAll = () => {
-  let buildCss = readCss().
-    then(processCss)
-    .then(writeCss)
+
+  // chain reading css -> processing -> writing
+  let buildCss = readCss().then(processCss).then(writeCss)
     .then(() => console.log("css built successfully.."));
 
-  let copyRest = copyHtml()
-    .then(() => console.log("html built successfully.."))
-    .then(() => copyAssets()
-    .then(() => console.log("assets built successfully..")));
 
-  Promise.all([buildCss, copyRest])
-    .then(() => {
-      console.log("Build finished");
-    }).catch(e => {
-      console.error("Build errored:", e);
-    });
+  // write html & assets in sync
+  let copyRest = new Promise(async resolve => {
+    await copyHtml();
+    console.log("html built successfully..");
+    await copyAssets();
+    console.log("assets built successfully..");
+    resolve();
+  });
+
+  return Promise.all([buildCss, copyRest]);
 };
 
+// delete and re-create ./dist before building
 const main = async() => {
+  console.log("build started");
+  const start = Date.now();
 
   try {
     await clearDist();
-    // await new Promise(resolve => setTimeout(resolve, 1500));
     await makeDist();
   } catch(e) {
     console.error("failed to regenerate ./dist", e);
@@ -65,6 +67,7 @@ const main = async() => {
 
   try {
     await buildAll();
+    console.log(`build done in ${Date.now() - start}ms`);
   } catch(e) {
     console.error("build errored: ", e);
   }

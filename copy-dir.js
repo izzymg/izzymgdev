@@ -1,6 +1,7 @@
 const fs = require("fs").promises;
 const path = require("path");
 
+// recursively copy all files in srcDir to dstDir
 const copyAssets = async function(srcDir, dstDir) {
   const files = await fs.readdir(srcDir);
   for(const file of files) {
