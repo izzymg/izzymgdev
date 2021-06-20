@@ -3,8 +3,8 @@ const autoprefixer = require("autoprefixer");
 const fs = require("fs").promises;
 const copyDir = require("./copy-dir");
 
-const cssInputPath = "./src/css/210604.css";
-const cssOutputPath = "./dist/css/210604.css";
+const cssInputPath = "./src/css/210606.css";
+const cssOutputPath = "./dist/css/210606.css";
 
 // Ignore dist not already existing when clearing it
 const clearDist = async() => {
