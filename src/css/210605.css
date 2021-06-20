@@ -36,9 +36,9 @@
 
     --card-top-height: 4rem;
 
-    --bg-one: linear-gradient(135deg, #ff9c6b 10%, #BB4E75 100%);
+    --bg-one: linear-gradient(135deg, hsl(20, 40%, 51%) 10%, hsl(339, 40%, 40%) 100%);
     --bg-two: hsl(240, 2%, 17%);
-    --bg-three: hsl(20, 100%, 71%);
+    --bg-three: hsl(20, 95%, 71%);
     --bg-four: hsl(339, 40%, 60%);
 
     --card-bg: hsl(260, 9%, 26%);
@@ -62,7 +62,7 @@ h1, h2 {
     clip-path: polygon(0 0%, 100% 0, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     padding: 4rem 0 3rem 0;
 
-    color: hsl(0, 0%, 94%);
+    color: hsl(0, 0%, 100%);
 
     padding: 2rem 0;
 }
@@ -78,7 +78,7 @@ h1, h2 {
     margin: 0.2rem 0 4rem 0;
     padding: 0;
 
-    color: hsl(0, 0%, 85%);
+    color: hsl(0, 0%, 97%);
 }
 
 .bio {
@@ -116,7 +116,7 @@ h1, h2 {
 
     margin: 2rem 0;
 
-    color: hsl(0, 0%, 85%);
+    color: hsl(0, 0%, 95%);
 
     opacity: 0.9;
 
@@ -188,7 +188,7 @@ h1, h2 {
 
 .contact-info > a {
     height: 52px;
-    color: hsl(241, 40%, 60%);
+    color: hsl(241, 60%, 90%);
     text-decoration: none;
 
     transition: color ease-in 150ms;
