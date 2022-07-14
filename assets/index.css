@@ -1,0 +1,216 @@
+:root {
+    font-family: "Lato", sans-serif;
+}
+
+/** Duplicated themes are to allow for both @media pref & explicit themes to override */
+
+
+/** System/No explicit choice + light system theme */
+body {
+    --bg-color-a: white;
+    --bg-color-b: hsl(0, 0%, 98%);
+
+    --accent-a: #819CFF;
+    --fg-color: hsl(0, 0%, 25%);
+
+    --shadow-alpha: 0.2;
+}
+
+/* System/No explicit choice + dark system theme */
+@media (prefers-color-scheme: dark) {
+
+}
+
+/** Explicit dark */
+body.dark {
+    --bg-color-a: hsl(0, 0%, 15%);
+
+    --bg-color-b: hsl(0, 0%, 25%);
+
+    --accent-a: #3b477c;
+    --accent-b: #8394cf;
+
+    --fg-color: hsl(0, 0%, 98%);
+
+    --shadow-alpha: 0;
+}
+
+/** Explicit Light */
+body.light {
+    --bg-color-a: white;
+    --bg-color-b: hsl(0, 0%, 98%);
+    
+    --accent-a: #819CFF;
+    --accent-b: #4879b9;
+
+    --shadow-alpha: 0.2;
+}
+
+body, h1, h2, h3, h4 {
+    margin: 0;
+    color: var(--fg-color);
+}
+
+body {
+    background: var(--bg-color-a);
+}
+
+.banner {
+    background: var(--accent-a);
+    padding: 10em 2em;
+    position: relative;
+}
+
+.banner .title-wrap {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-right: 5em;
+}
+
+.banner .title-wrap h1, .banner .title-wrap h2 {
+    color: #fff;
+}
+
+.banner .title-wrap h1 {
+    font-size: 8em;
+}
+
+.banner .title-wrap h2 {
+    font-size: 2em;
+}
+
+.settings-dropdown {
+    position: relative;
+    top: 5px;
+    right: 5px;
+}
+
+.settings-dropdown #settings-cog {
+    fill: #fff;
+    cursor: pointer;
+}
+
+.settings-dropdown .settings-list {
+    display: none;
+    list-style: none;
+
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--bg-color-a);
+    padding: 1rem 1em;
+
+    position: absolute;
+    bottom: -100px;
+    left: 5px;
+}
+
+.settings-dropdown:hover .settings-list, .settings-dropdown:focus-within .settings-list {
+    display: flex;
+}
+
+.settings-list button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+
+    color: var(--fg-color);
+    margin: 0.5em 0;
+}
+
+.settings-list button:focus:not(.activated), .settings-list button:hover:not(.activated) {
+    color: var(--accent-a);
+    outline: 1px solid var(--accent-a);
+}
+
+.settings-list button.activated {
+    text-decoration: underline;
+}
+
+.splash {
+    height: 100vh;
+    background: var(--bg-color-a);
+}
+
+.banner-nav {
+    position: absolute;
+    bottom: -1em;
+    
+    display: flex;
+    flex-flow: row wrap;
+    gap: 2em;
+}
+
+.banner-nav .nav-btn {
+    border: none;
+    outline: none;
+    color: var(--fg-color);
+    background-color: var(--bg-color-b);
+    padding: 1em 2em;
+
+    box-shadow: 1px 3px 5px -1px rgba(0, 0, 0, var(--shadow-alpha));
+
+    text-transform: uppercase;
+    font-weight: 600;
+
+    z-index: 1;
+
+    cursor: pointer;
+}
+
+.banner-nav .nav-btn:hover, .banner-nav .nav-btn:focus {
+    background-color: var(--accent-b);
+}
+
+.sub-banner {
+    margin-top: 5em;
+    font-size: 2em;
+    padding: 0 5em;
+}
+
+#witch-hat {
+    z-index: 0;
+    position: absolute;
+
+    bottom: -10em;
+    right: 5em;
+}
+
+.down-arrow-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: bottom;
+
+    padding-top: 10vh;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0%);
+    }
+
+    50% {
+        transform: translateY(-30px);
+    }
+
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+#down-arrow {
+    fill: var(--accent-a);
+    animation: bounce 1300ms cubic-bezier(0,.78,.2,1.47);
+}
+
+
+@media (prefers-reduced-motion) {
+    #down-arrow {
+        animation: none;
+    }
+}
