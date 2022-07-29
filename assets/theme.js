@@ -1,10 +1,15 @@
 const ACTIVATED_CLASSNAME = "activated"
+const osPrefersDarkQuery = window.matchMedia("(prefers-color-scheme: dark)")
 
 function getTheme() {
-    return localStorage.getItem("theme")
+    const explicitThemePref = localStorage.getItem("theme")
+    if(!explicitThemePref && osPrefersDarkQuery.matches) {
+        return "dark"
+    }
+    return explicitThemePref
 }
 
-function setTheme(theme) {
+function setThemePref(theme) {
     localStorage.setItem("theme", theme)
     setActiveButton()
     setBodyClass()
@@ -28,6 +33,7 @@ function setActiveButton() {
 
     const buttons = getButtons()
     const theme = getTheme()
+    console.log(theme)
 
     buttons.light.classList.remove(ACTIVATED_CLASSNAME)
     buttons.dark.classList.remove(ACTIVATED_CLASSNAME)
@@ -40,24 +46,25 @@ function setActiveButton() {
 }
 
 function setBodyClass() {
+    console.log(getTheme())
     if(getTheme() == "dark") {
         document.body.classList.add("dark")
         document.body.classList.remove("light")
-    } else if(getTheme() == "light") {
+    } else {
         document.body.classList.add("light")
         document.body.classList.remove("dark")
-    } else {
-        document.body.classList.remove("dark")
-        document.body.classList.remove("light")
     }
 }
 
 function hookButtons() {
-    getButtons().dark.addEventListener("click", () => setTheme("dark"))
-    getButtons().light.addEventListener("click", () => setTheme("light"))
+    getButtons().dark.addEventListener("click", () => {
+        setThemePref("dark");
+    })
+    getButtons().light.addEventListener("click", () => setThemePref("light"))
     getButtons().system.addEventListener("click", () => removeTheme())
 }
 
 setActiveButton()
 hookButtons()
 setBodyClass()
+osPrefersDarkQuery.addEventListener("change", setBodyClass)
