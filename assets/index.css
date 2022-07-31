@@ -154,12 +154,12 @@ a {
     margin: 0.5em 0;
 }
 
-.settings-list button:focus:not(.activated), .settings-list button:hover:not(.activated) {
-    color: var(--accent-a);
-    outline: 1px solid var(--accent-a);
+.settings-list button:hover, .settings-list button:focus-visible {
+    color: var(--button-bg-hover);
 }
 
 .settings-list button.activated {
+    color: var(--button-bg-hover);
     text-decoration: underline;
 }
 
@@ -212,10 +212,8 @@ a {
     background-color: var(--button-bg-hover);
 }
 
-.banner-nav .nav-btn:focus {
-    outline-offset: 5px;
-    outline-style: dotted;
-    outline-color: var(--button-bg-hover);
+.banner-nav .nav-btn:focus-visible {
+    outline: var(--button-bg-hover) dotted 5px;
 }
 
 .sub-banner {
