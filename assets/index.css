@@ -56,6 +56,13 @@ body {
 
 a {
     color: var(--link-color);
+    margin: 0.5em 0;
+    max-width: fit-content;
+}
+
+
+button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
+    outline: var(--button-bg-hover) dotted 0.3em;
 }
 
 .banner {
@@ -210,10 +217,6 @@ a {
 
 .banner-nav .nav-btn:hover {
     background-color: var(--button-bg-hover);
-}
-
-.banner-nav .nav-btn:focus-visible {
-    outline: var(--button-bg-hover) dotted 5px;
 }
 
 .sub-banner {
