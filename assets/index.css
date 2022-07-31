@@ -31,7 +31,7 @@ body.dark {
 body.light {
     --bg-color-a: white;
     --bg-color-b: hsl(0, 0%, 98%);
-    --fg-color: hsl(0, 0%, 30%);
+    --fg-color: hsl(0, 0%, 16%);
     
     --accent-a: #4F5D75;
     --accent-b: hsl(229, 19%, 22%);
