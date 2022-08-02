@@ -192,6 +192,7 @@ button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
     box-sizing: border-box;
 
     display: flex;
+    gap: 1em;
     flex-flow: row wrap;
 }
 
