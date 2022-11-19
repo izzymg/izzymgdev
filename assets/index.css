@@ -1,5 +1,5 @@
 :root {
-    font-family: "Lato", sans-serif;
+    font-family: "Poppins", sans-serif;
     scroll-behavior: smooth;
 
     font-size: 20px;
@@ -182,23 +182,9 @@ button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
     background: var(--bg-color-a);
 }
 
-.banner-nav {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    
-    width: 100vw;
-
-    box-sizing: border-box;
-
-    display: flex;
-    gap: 1em;
-    flex-flow: row wrap;
-}
-
-.banner-nav .nav-btn {
+.link-btn {
     padding: 1em 2em;
-    margin: 0 2em;
+    margin: 1em 0;
     border: none;
 
     color: var(--button-fg);
@@ -217,7 +203,7 @@ button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
     cursor: pointer;
 }
 
-.banner-nav .nav-btn:hover {
+.link-btn:hover {
     background-color: var(--button-bg-hover);
 }
 
@@ -267,8 +253,69 @@ button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
     --fg-color: #fff;
 }
 
+.card-grid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 450px));
+}
+
+.doing-card {
+
+    background-color: var(--accent-a);
+    border: 1px solid var(--accent-b);
+
+    box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.1);
+
+    margin: 1em;
+    display: flex;
+    flex-flow: column nowrap;
+
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+}
+
+.doing-card.shown {
+    opacity: 1;
+}
+
+.doing-card .card-titlebar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    font-size: 0.8em;
+
+    background: hsl(0, 0%, 10%);
+}
+
+.doing-card .card-titlebar .card-title-img {
+    margin: 0 1em;
+}
+
+.doing-card .card-titlebar {
+    padding: 0.8em;
+}
+
+.doing-card .card-content {
+    padding: 1.5em;
+}
+
+.doing-card .card-content strong {
+    color: hsl(220, 65%, 85%);
+}
+
+.doing-card .card-content {
+    font-size: 0.65em;
+    flex-grow: 1;
+}
+
 .second-section, .third-section {
-    padding: 4em 2em;
+    padding: 4em 10px;
+}
+
+.second-section h2 {
+    border-bottom: 2px solid var(--button-bg);
+    width: fit-content;
 }
 
 .para-wrap {
