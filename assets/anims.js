@@ -9,6 +9,6 @@ function observeCards() {
         })
     })
 
-    Array.from(document.querySelectorAll(".doing-card")).forEach(card => observer.observe(card))
+    Array.from(document.querySelectorAll(".observed")).forEach(card => observer.observe(card))
 }
 observeCards();
