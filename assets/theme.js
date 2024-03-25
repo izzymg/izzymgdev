@@ -33,7 +33,6 @@ function setActiveButton() {
 
     const buttons = getButtons()
     const theme = getTheme()
-    console.log(theme)
 
     buttons.light.classList.remove(ACTIVATED_CLASSNAME)
     buttons.dark.classList.remove(ACTIVATED_CLASSNAME)
