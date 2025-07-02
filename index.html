@@ -4,6 +4,7 @@
 <head>
     <script defer type="module" src="/src/theme.js"></script>
     <script defer type="module" src="/src/anims.js"></script>
+    <script defer type="module" src="/src/posts.js"></script>
 
 
     <meta charset="UTF-8">
@@ -16,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Advent+Pro&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
         rel="stylesheet">
 
     <meta name="description" content="NZ based Software Engineer" />
@@ -28,8 +29,8 @@
     <main>
         <div class="toolbar">
             <div tabindex="0" role="button" class="theme-settings" aria-label="Theme Settings">
-                <svg  id="settings-cog" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                     <path
+                <svg id="settings-cog" xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                    <path
                         d="M24 42q-7.5 0-12.75-5.25T6 24q0-7.5 5.25-12.75T24 6q.4 0 .85.025.45.025 1.15.075-1.8 1.6-2.8 3.95-1 2.35-1 4.95 0 4.5 3.15 7.65Q28.5 25.8 33 25.8q2.6 0 4.95-.925T41.9 22.3q.05.6.075.975Q42 23.65 42 24q0 7.5-5.25 12.75T24 42Zm0-3q5.45 0 9.5-3.375t5.05-7.925q-1.25.55-2.675.825Q34.45 28.8 33 28.8q-5.75 0-9.775-4.025T19.2 15q0-1.2.25-2.575.25-1.375.9-3.125-4.9 1.35-8.125 5.475Q9 18.9 9 24q0 6.25 4.375 10.625T24 39Zm-.2-14.85Z" />
                 </svg>
                 <div class="settings-list">
@@ -39,26 +40,66 @@
                 </div>
             </div>
         </div>
-        <div class="layout">
-            <div class="lil-panel">
-                <div class="lil-panel-heading">
-                    <h3>Izzy MG</h3>
+        <div class="layout-wrap">
+            <div class="layout">
+                <div class="lil-panel">
+                    <div class="lil-panel-heading">
+                        <h3>@me</h3>
+                        <h6>izzy mg</h6>
+                    </div>
+                    <div class="cols">
+                        <img src="30461139.jpg" class="portrait" alt="Portrait">
+                        <div class="content">
+                            <p class="lil-panel-para">
+                                NZ-based software engineer currently working in fintech.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="lil-panel-area">
+                        I'm primarily focused on backend development & software architecture, with experience in
+                        e-learning, e-commerce and fintech.
+                        <br><br>
+                        I have a fascination with 3D rendering software, graphics programming and low level systems
+                        programming. I also build and run simple home-servers.
+                    </div>
                 </div>
-                <div class="cols">
-                    <img src="1695718053394.jpg" class="portrait" alt="Portrait">
+                <div class="lil-panel">
+                    <div class="lil-panel-heading">
+                        <h3>Things</h3>
+                    </div>
                     <div class="content">
                         <p class="lil-panel-para">
-                            NZ-based software engineer currently working in fintech.
+                            (no particular order)
                         </p>
                         <ul style="list-style-type: disclosure-closed;">
-                            <li>Backend web development</li>
-                            <li>Software design & architecture</li>
-                            <li>Rust</li>
-                            <li>Go</li>
-                            <li>PHP</li>
-                            <li>JS</li>
+                            <li>Go (web services & cli)</li>
+                            <li>PHP (work)</li>
+                            <li>Rust (3d work)</li>
+                            <li>Typescript & Javascript (work & web)</li>
                         </ul>
+                        <p class="lil-panel-para">
+                            Contact
+                        </p>
+                        <ul style="list-style-type: disclosure-closed;">
+                            <li><a href="https://github.com/izzymg">github:izzymg</a></li>
+                            <li><a href="mailto:izzymg@proton.me">izzymg@proton.me</a></li>
+                        </ul>
+                        <div class="lil-panel-para lil-lil">
+                            I currently work full-time and intend to, but I'm always interested in working on projects I
+                            think are neat.
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="layout-wrap">
+                <div id="post-view">
+                    <a href="#">Back</a>
+                    <div id="content"></div>
+                </div>
+                <div class="posts-layout show">
+                    <h2> &gt;posts&lt; </h2>
+                    <ul id="posts-index"></ul>
                 </div>
             </div>
         </div>
