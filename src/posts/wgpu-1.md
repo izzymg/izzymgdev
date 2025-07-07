@@ -71,7 +71,7 @@ struct InstanceData {
 
 In the shader, it's very simple - we want to pass in an orthographic projection matrix the size of the screen, and we'll multiply our vertex position by this matrix - then just sample the font texture for our fragment shader - using the black/whiteness as a "mask" for the quad.
 
-```wgsl
+```glsl
 // Vertex shader (WGSL)
 struct VertexInput {
     @location(0) position: vec2<f32>,
@@ -96,7 +96,7 @@ fn vs_main(input: VertexInput) -> VertexOutput {
 }
 ```
 
-```wgsl
+```glsl
 // Fragment shader (WGSL)
 @group(0) @binding(0) var font_tex: texture_2d<f32>;
 @group(0) @binding(1) var font_sampler: sampler;

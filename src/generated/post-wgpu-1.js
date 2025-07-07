@@ -2,7 +2,7 @@
 class post_wgpu_1 extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
-        <h2>obsession: wgpu</h2>
+        <h2>obsession: wgpu: fonts</h2>
         <p class="post-date">Wed Jul 02 2025</p>
         <div class="post-content">
         <p>My current obsession is with the popular Rust library <a href="https://github.com/gfx-rs/wgpu">wgpu</a>. This graphics API provides an abstraction over Vulkan, DX12, OpenGL and/or Metal, implementing the up and coming WebGPU standard.</p>
@@ -17,45 +17,85 @@ class post_wgpu_1 extends HTMLElement {
 <p>We get our vertices somehow, and our indices somehow, and write them into a buffer, then call &quot;draw&quot;.</p>
 <p><em>All code below is psuedo-code</em></p>
 <p>The next thing we need is some characters to output. A bitmap font comes as a simple PNG/BMP with a white background, and black pixels for characters. First, we can calculate the glyphs and put them into a hashmap:</p>
-<pre><code class="language-rs">struct Glyph {
-    pixel_size: f32, // size in real pixels
-    x_offset: f32, // next glyph start
-    uv_coords: Vec2&lt;f23&gt;, // 0-1 normalized to texture size
-    uv_size: Vec2&lt;f32&gt; // 0-1 normalized to texture size
+<pre><code class="language-rust">struct Glyph {
+    uv_coords: Vec2, // 0-1 normalized to texture size
+    uv_size: Vec2,   // 0-1 normalized to texture size
+    advance: f32,          // horizontal advance after this glyph
 }
 
-let font = HashMap&lt;char, Glyph&gt;::new()
+let mut font: std::collections::HashMap&lt;char, Glyph&gt; = std::collections::HashMap::new();
+// ...populate font...
 </code></pre>
 <p>For each character in the fontset, we&#39;d generate a glyph and store it. Now it&#39;s time to render some text. Let&#39;s start with a string: &quot;cat&quot;., Obviously we need to break it up into a list of characters.</p>
-<pre><code class="language-rs">fn render_text(text: &amp;str) {
-    let pos = Vec2&lt;f32&gt;::zero();
+<pre><code class="language-rust">fn render_text&lt;&#39;a&gt;(
+    text: &amp;str,
+    font: &amp;std::collections::HashMap&lt;char, Glyph&gt;,
+    base_pos: Vec2,
+    instance_data: &amp;mut Vec&lt;InstanceData&gt;,
+) {
+    let mut pos = base_pos;
     for ch in text.chars() {
-        let glyph = font.get(&amp;ch).unwrap()
-        let vertices = get_verts_for_glyph(&amp;glyph, pos)
-        let indices = get_indices_for_glyph(&amp;glyph)
-        bind_vertex_buffer(&amp;vertices)
-        bind_index_buffer(&amp;indices)
-        draw();
+        if let Some(glyph) = font.get(&amp;ch) {
+            instance_data.push(InstanceData {
+                position: pos,
+                uv_coords: glyph.uv_coords,
+                uv_size: glyph.uv_size,
+            });
+            pos.x += glyph.advance;
+        }
     }
+    // instance_data will be uploaded to a wgpu::Buffer and drawn in a single draw call
 }
 </code></pre>
-<p><code>get_verts_for_glyph</code> is pretty simple - we&#39;ll just calculate our UV offset by looking at the glyph information and set it as our vertex UV coordinate. Then, we&#39;ll create vertices surrounding the glyph at the top left, top right, bottom left, and bottom right. Our indices are just 6 indices creating a quad, and there we have characters on the screen.</p>
-<p>In the shader, it&#39;s very simple - we want to pass in an orthographic projection matrix the size of the screen, and we&#39;ll multiply our vertex position by this matrix - then just sample the font texture for our fragment shader - using the black/whiteness as a &quot;mask&quot; for the quad.</p>
-<pre><code class="language-glsl">fn vert() {
-    out.position = camera.projection * in.position;
-    out.uv = in.uv; // probably want a y-flip here
+<p>Where <code>InstanceData</code> is a struct matching your instance buffer layout:</p>
+<pre><code class="language-rust">#[repr(C)]
+#[derive(Copy, Clone)]
+struct InstanceData {
+    position: Vec2,
+    uv_coords: Vec2,
+    uv_size: Vec2,
 }
+</code></pre>
+<p>In the shader, it&#39;s very simple - we want to pass in an orthographic projection matrix the size of the screen, and we&#39;ll multiply our vertex position by this matrix - then just sample the font texture for our fragment shader - using the black/whiteness as a &quot;mask&quot; for the quad.</p>
+<pre><code class="language-glsl">// Vertex shader (WGSL)
+struct VertexInput {
+    @location(0) position: vec2&lt;f32&gt;,
+    @location(1) uv: vec2&lt;f32&gt;,
+    @location(2) instance_pos: vec2&lt;f32&gt;,
+    @location(3) instance_uv: vec2&lt;f32&gt;,
+    @location(4) instance_uv_size: vec2&lt;f32&gt;,
+};
 
-fn frag() {
-    let mask = 1 - textureSample(font, in.uv).a;
-    return (in.color.rgb, min(mask, in.color.a)); // only draw colour if the bitmap font has a value
+struct VertexOutput {
+    @builtin(position) position: vec4&lt;f32&gt;,
+    @location(0) uv: vec2&lt;f32&gt;,
+};
+
+@vertex
+fn vs_main(input: VertexInput) -&gt; VertexOutput {
+    var out: VertexOutput;
+    let world_pos = input.position + input.instance_pos;
+    out.position = camera.projection * vec4&lt;f32&gt;(world_pos, 0.0, 1.0);
+    out.uv = input.instance_uv + input.uv * input.instance_uv_size;
+    return out;
+}
+</code></pre>
+<pre><code class="language-glsl">// Fragment shader (WGSL)
+@group(0) @binding(0) var font_tex: texture_2d&lt;f32&gt;;
+@group(0) @binding(1) var font_sampler: sampler;
+
+@fragment
+fn fs_main(input: VertexOutput) -&gt; @location(0) vec4&lt;f32&gt; {
+    let mask = textureSample(font_tex, font_sampler, input.uv).a;
+    // Assume input color is passed as a uniform or push constant
+    return vec4&lt;f32&gt;(input_color.rgb, input_color.a * mask);
 }
 </code></pre>
 <p>If we render more than like, a handful of strings though, we&#39;ll start to notice our performance <strong>tank</strong>. Really we should be able to do 4000+ FPS on a good rig, and with a few hundred strings I could take that down to &lt; <em>150</em>.</p>
 <p>So what can we do less of? For starters, our vertices tell us what shape to render, right? But we always just render a quad. So let&#39;s use a single vertex buffer and a single index buffer, containing just the data to write a quad. But how can we move our characters in the string uniquely? We can do that using GPU instancing. This allows us to render the same vertices and indices over and over <em>very fast</em>, but provides us a small buffer we can write per-instance data into. We&#39;ll encode the UV coordinates into the <em>instance buffer</em> for the characters - as well as a base position for rendering them (as we lost this by making our vertices all the same). Also, bitmaps are fixed-size, so let&#39;s stop tracking pixel sizes entirely.</p>
-<pre><code class="language-rs">struct Glyph {
-    uv_coords: Vec2&lt;f23&gt;, // 0-1 normalized to texture size
-    uv_size: Vec2&lt;f32&gt; // 0-1 normalized to texture size
+<pre><code class="language-rust">struct Glyph {
+    uv_coords: Vec2, // 0-1 normalized to texture size
+    uv_size: Vec2,   // 0-1 normalized to texture size
 }
 
 struct Font {
@@ -66,43 +106,48 @@ struct Font {
 
 // render
 
-fn render_setup() {
-    bind_vertex_buffer(QUAD_VERTS)
-    bind_index_buffer(QUAD_INDICES)
+fn render_setup&lt;&#39;a&gt;(
+    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
+    vertex_buffer: &amp;&#39;a wgpu::Buffer,
+    index_buffer: &amp;&#39;a wgpu::Buffer,
+) {
+    render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+    render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
 }
 
-fn render_text(text: &amp;str, base_position: Vec2&lt;f32&gt;) {
-    let mut instances = vec![]
-    let mut pos = base_position
-    for ch in text.chars() {
-        let glyph = font.get(&amp;ch).unwrap()
-        instances.push(pos, [
-            glyph.uv_coords.x, glyph.uv_coords.y,
-            glyph.uv_size.x, glyph.uv_size.y
-        ]) // I store these in a [f32; 4] for alignment
-
-    }
-    draw(instances)
-}
-</code></pre>
-<pre><code class="language-glsl">fn vert() {
-    let world_position = instance.position + in.position;
-    out.position = camera.projection * world_position;
-    out.uv = in.uv; // probably want a y-flip here
+fn render_text_instanced&lt;&#39;a&gt;(
+    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
+    instance_buffer: &amp;&#39;a wgpu::Buffer,
+    instance_count: u32,
+) {
+    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
+    render_pass.draw_indexed(0..6, 0, 0..instance_count);
 }
 </code></pre>
 <p>This works real nicely, but to take it one step further, we can actually batch repeated calls to render_text.</p>
 <p>Roughly, say we have </p>
 <p><code>Draw calls: [Text, Model, Text, Text, Model]</code></p>
 <p>We can batch calls 2 and 3 together in one render. We&#39;d split our render_text function into a set_text() and render() function:</p>
-<pre><code class="language-rs">fn set_text(text: &amp;str, pos: Vec2&lt;f32&gt;) -&gt; Handle {
-    /// store instance buffer start
-    /// write into the instance buffer
-    /// return instance buffer start + instance buffer len as handle
+<pre><code class="language-rust">fn set_text(
+    text: &amp;str,
+    pos: Vec2,
+    font: &amp;std::collections::HashMap&lt;char, Glyph&gt;,
+    instance_data: &amp;mut Vec&lt;InstanceData&gt;,
+) -&gt; (usize, usize) {
+    let start = instance_data.len();
+    render_text(text, font, pos, instance_data);
+    let end = instance_data.len();
+    (start, end)
 }
 
-fn render_text_batch(handle: Handle) {
-    /// render from handle.start -&gt; handle.end
+fn render_text_batch&lt;&#39;a&gt;(
+    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
+    instance_buffer: &amp;&#39;a wgpu::Buffer,
+    range: (usize, usize),
+) {
+    let instance_count = (range.1 - range.0) as u32;
+    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
+    render_pass.draw_indexed(0..6, 0, range.0 as u32..range.1 as u32);
 }
 </code></pre>
 <p>Cool, now we can potentially render dozens of small strings in a single draw call, with 4 vertices, 6 indices by making use of GPU instancing. What I love so much about WGPU is how obvious this feels by just reading the API. There&#39;s no hacky weirdness here, you don&#39;t feel like a genius figuring it out, and performant decisions feel obvious.</p>
