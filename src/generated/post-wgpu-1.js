@@ -104,52 +104,40 @@ struct Font {
     padding: Vec2&lt;f32&gt; // per-glyph padding
 }
 
-// render
-
-fn render_setup&lt;&#39;a&gt;(
-    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
-    vertex_buffer: &amp;&#39;a wgpu::Buffer,
-    index_buffer: &amp;&#39;a wgpu::Buffer,
-) {
-    render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
-    render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+pub struct Render {
+    instance_buffer: wgpu::Buffer,
+    // ...
 }
 
-fn render_text_instanced&lt;&#39;a&gt;(
-    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
-    instance_buffer: &amp;&#39;a wgpu::Buffer,
-    instance_count: u32,
-) {
-    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
-    render_pass.draw_indexed(0..6, 0, 0..instance_count);
+impl Render {
+    fn set_text(
+        &amp;self
+        text: &amp;str,
+        pos: Vec2,
+        font: &amp;std::collections::HashMap&lt;char, Glyph&gt;,
+        queue
+    ) -&gt; (usize, usize) {
+        let start = instance_data.len();
+        render_text(text, font, pos, instance_data);
+        let end = instance_data.len();
+        (start, end)
+    }
+
+    fn render_text_batch&lt;&#39;a&gt;(
+        render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
+        instance_buffer: &amp;&#39;a wgpu::Buffer,
+        range: (usize, usize),
+    ) {
+        let instance_count = (range.1 - range.0) as u32;
+        render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
+        render_pass.draw_indexed(0..6, 0, range.0 as u32..range.1 as u32);
+    }
 }
 </code></pre>
 <p>This works real nicely, but to take it one step further, we can actually batch repeated calls to render_text.</p>
 <p>Roughly, say we have </p>
 <p><code>Draw calls: [Text, Model, Text, Text, Model]</code></p>
 <p>We can batch calls 2 and 3 together in one render. We&#39;d split our render_text function into a set_text() and render() function:</p>
-<pre><code class="language-rust">fn set_text(
-    text: &amp;str,
-    pos: Vec2,
-    font: &amp;std::collections::HashMap&lt;char, Glyph&gt;,
-    instance_data: &amp;mut Vec&lt;InstanceData&gt;,
-) -&gt; (usize, usize) {
-    let start = instance_data.len();
-    render_text(text, font, pos, instance_data);
-    let end = instance_data.len();
-    (start, end)
-}
-
-fn render_text_batch&lt;&#39;a&gt;(
-    render_pass: &amp;mut wgpu::RenderPass&lt;&#39;a&gt;,
-    instance_buffer: &amp;&#39;a wgpu::Buffer,
-    range: (usize, usize),
-) {
-    let instance_count = (range.1 - range.0) as u32;
-    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
-    render_pass.draw_indexed(0..6, 0, range.0 as u32..range.1 as u32);
-}
-</code></pre>
 <p>Cool, now we can potentially render dozens of small strings in a single draw call, with 4 vertices, 6 indices by making use of GPU instancing. What I love so much about WGPU is how obvious this feels by just reading the API. There&#39;s no hacky weirdness here, you don&#39;t feel like a genius figuring it out, and performant decisions feel obvious.</p>
 
         </div>
