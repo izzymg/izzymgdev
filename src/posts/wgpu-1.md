@@ -1,5 +1,5 @@
 ---
-title: "obsession: wgpu"
+title: "obsession: wgpu: fonts"
 date: 2025-07-02
 ---
 
@@ -22,46 +22,90 @@ We get our vertices somehow, and our indices somehow, and write them into a buff
 
 The next thing we need is some characters to output. A bitmap font comes as a simple PNG/BMP with a white background, and black pixels for characters. First, we can calculate the glyphs and put them into a hashmap:
 
-```rs
+```rust
 struct Glyph {
-    pixel_size: f32, // size in real pixels
-    x_offset: f32, // next glyph start
-    uv_coords: Vec2<f23>, // 0-1 normalized to texture size
-    uv_size: Vec2<f32> // 0-1 normalized to texture size
+    uv_coords: Vec2, // 0-1 normalized to texture size
+    uv_size: Vec2,   // 0-1 normalized to texture size
+    advance: f32,          // horizontal advance after this glyph
 }
 
-let font = HashMap<char, Glyph>::new()
+let mut font: std::collections::HashMap<char, Glyph> = std::collections::HashMap::new();
+// ...populate font...
 ```
 
 For each character in the fontset, we'd generate a glyph and store it. Now it's time to render some text. Let's start with a string: "cat"., Obviously we need to break it up into a list of characters.
 
-```rs
-fn render_text(text: &str) {
-    let pos = Vec2<f32>::zero();
+```rust
+fn render_text<'a>(
+    text: &str,
+    font: &std::collections::HashMap<char, Glyph>,
+    base_pos: Vec2,
+    instance_data: &mut Vec<InstanceData>,
+) {
+    let mut pos = base_pos;
     for ch in text.chars() {
-        let glyph = font.get(&ch).unwrap()
-        let vertices = get_verts_for_glyph(&glyph, pos)
-        let indices = get_indices_for_glyph(&glyph)
-        bind_vertex_buffer(&vertices)
-        bind_index_buffer(&indices)
-        draw();
+        if let Some(glyph) = font.get(&ch) {
+            instance_data.push(InstanceData {
+                position: pos,
+                uv_coords: glyph.uv_coords,
+                uv_size: glyph.uv_size,
+            });
+            pos.x += glyph.advance;
+        }
     }
+    // instance_data will be uploaded to a wgpu::Buffer and drawn in a single draw call
 }
 ```
 
-`get_verts_for_glyph` is pretty simple - we'll just calculate our UV offset by looking at the glyph information and set it as our vertex UV coordinate. Then, we'll create vertices surrounding the glyph at the top left, top right, bottom left, and bottom right. Our indices are just 6 indices creating a quad, and there we have characters on the screen.
+Where `InstanceData` is a struct matching your instance buffer layout:
+
+```rust
+#[repr(C)]
+#[derive(Copy, Clone)]
+struct InstanceData {
+    position: Vec2,
+    uv_coords: Vec2,
+    uv_size: Vec2,
+}
+```
 
 In the shader, it's very simple - we want to pass in an orthographic projection matrix the size of the screen, and we'll multiply our vertex position by this matrix - then just sample the font texture for our fragment shader - using the black/whiteness as a "mask" for the quad.
 
-```glsl
-fn vert() {
-    out.position = camera.projection * in.position;
-    out.uv = in.uv; // probably want a y-flip here
-}
+```wgsl
+// Vertex shader (WGSL)
+struct VertexInput {
+    @location(0) position: vec2<f32>,
+    @location(1) uv: vec2<f32>,
+    @location(2) instance_pos: vec2<f32>,
+    @location(3) instance_uv: vec2<f32>,
+    @location(4) instance_uv_size: vec2<f32>,
+};
 
-fn frag() {
-    let mask = 1 - textureSample(font, in.uv).a;
-    return (in.color.rgb, min(mask, in.color.a)); // only draw colour if the bitmap font has a value
+struct VertexOutput {
+    @builtin(position) position: vec4<f32>,
+    @location(0) uv: vec2<f32>,
+};
+
+@vertex
+fn vs_main(input: VertexInput) -> VertexOutput {
+    var out: VertexOutput;
+    let world_pos = input.position + input.instance_pos;
+    out.position = camera.projection * vec4<f32>(world_pos, 0.0, 1.0);
+    out.uv = input.instance_uv + input.uv * input.instance_uv_size;
+    return out;
+}
+```
+
+```wgsl
+// Fragment shader (WGSL)
+@group(0) @binding(0) var font_tex: texture_2d<f32>;
+@group(0) @binding(1) var font_sampler: sampler;
+
+@fragment
+fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
+    let mask = textureSample(font_tex, font_sampler, input.uv).a;
+    // Assume input color is passed as a uniform or push constant
+    return vec4<f32>(input_color.rgb, input_color.a * mask);
 }
 ```
 
@@ -70,10 +114,10 @@ If we render more than like, a handful of strings though, we'll start to notice 
 So what can we do less of? For starters, our vertices tell us what shape to render, right? But we always just render a quad. So let's use a single vertex buffer and a single index buffer, containing just the data to write a quad. But how can we move our characters in the string uniquely? We can do that using GPU instancing. This allows us to render the same vertices and indices over and over *very fast*, but provides us a small buffer we can write per-instance data into. We'll encode the UV coordinates into the *instance buffer* for the characters - as well as a base position for rendering them (as we lost this by making our vertices all the same). Also, bitmaps are fixed-size, so let's stop tracking pixel sizes entirely.
 
 
-```rs
+```rust
 struct Glyph {
-    uv_coords: Vec2<f23>, // 0-1 normalized to texture size
-    uv_size: Vec2<f32> // 0-1 normalized to texture size
+    uv_coords: Vec2, // 0-1 normalized to texture size
+    uv_size: Vec2,   // 0-1 normalized to texture size
 }
 
 struct Font {
@@ -84,31 +128,22 @@ struct Font {
 
 // render
 
-fn render_setup() {
-    bind_vertex_buffer(QUAD_VERTS)
-    bind_index_buffer(QUAD_INDICES)
+fn render_setup<'a>(
+    render_pass: &mut wgpu::RenderPass<'a>,
+    vertex_buffer: &'a wgpu::Buffer,
+    index_buffer: &'a wgpu::Buffer,
+) {
+    render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+    render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
 }
 
-fn render_text(text: &str, base_position: Vec2<f32>) {
-    let mut instances = vec![]
-    let mut pos = base_position
-    for ch in text.chars() {
-        let glyph = font.get(&ch).unwrap()
-        instances.push(pos, [
-            glyph.uv_coords.x, glyph.uv_coords.y,
-            glyph.uv_size.x, glyph.uv_size.y
-        ]) // I store these in a [f32; 4] for alignment
-
-    }
-    draw(instances)
-}
-```
-
-```glsl
-fn vert() {
-    let world_position = instance.position + in.position;
-    out.position = camera.projection * world_position;
-    out.uv = in.uv; // probably want a y-flip here
+fn render_text_instanced<'a>(
+    render_pass: &mut wgpu::RenderPass<'a>,
+    instance_buffer: &'a wgpu::Buffer,
+    instance_count: u32,
+) {
+    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
+    render_pass.draw_indexed(0..6, 0, 0..instance_count);
 }
 ```
 
@@ -120,15 +155,27 @@ Roughly, say we have
 
 We can batch calls 2 and 3 together in one render. We'd split our render_text function into a set_text() and render() function:
 
-```rs
-fn set_text(text: &str, pos: Vec2<f32>) -> Handle {
-    /// store instance buffer start
-    /// write into the instance buffer
-    /// return instance buffer start + instance buffer len as handle
+```rust
+fn set_text(
+    text: &str,
+    pos: Vec2,
+    font: &std::collections::HashMap<char, Glyph>,
+    instance_data: &mut Vec<InstanceData>,
+) -> (usize, usize) {
+    let start = instance_data.len();
+    render_text(text, font, pos, instance_data);
+    let end = instance_data.len();
+    (start, end)
 }
 
-fn render_text_batch(handle: Handle) {
-    /// render from handle.start -> handle.end
+fn render_text_batch<'a>(
+    render_pass: &mut wgpu::RenderPass<'a>,
+    instance_buffer: &'a wgpu::Buffer,
+    range: (usize, usize),
+) {
+    let instance_count = (range.1 - range.0) as u32;
+    render_pass.set_vertex_buffer(1, instance_buffer.slice(..));
+    render_pass.draw_indexed(0..6, 0, range.0 as u32..range.1 as u32);
 }
 ```
 
