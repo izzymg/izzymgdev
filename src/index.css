@@ -1,3 +1,5 @@
+
+@import url('highlight.js/styles/github-dark.css');
 :root {
     font-family: "DM Mono", sans-serif;
     scroll-behavior: smooth;
@@ -233,4 +235,8 @@ button:focus-visible, a:focus-visible, .settings-dropdown:focus-visible {
     margin: 1em;
     font-size: 18px;
     line-height: 1.5;
+}
+
+pre > * {
+    font-family: "DM Mono";
 }
